@@ -1,4 +1,4 @@
-# Software Engineering Assignment - Group 68
+# Cancer Diagnosing using Deep Learning
 # Contributors
 1. 22022547 Nguyen Phu Loc
 2. 22022605 Nguyen Duy Minh Lam
@@ -6,7 +6,7 @@
 4. 22022551 Bui Ngoc Khanh
 # Project Title
 
-A short description about the project and/or client.
+The software is used for cancer diagnosis based on MRI, CT scan image
 
 ## Getting Started
 

@@ -1,4 +1,4 @@
-# Cancer Diagnosis using Deep Learning
+# Brain Cancer Diagnosis using Deep Learning
 # Contributors
 1. 22022547 Nguyen Phu Loc
 2. 22022605 Nguyen Duy Minh Lam

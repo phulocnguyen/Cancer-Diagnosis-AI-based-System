@@ -4,7 +4,9 @@
   background-size: cover;
   background-position: center;
   padding: 15px;
+  width: 100vw;
 }
+
 
 .full-screen {
   min-height: 100vh;

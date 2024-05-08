@@ -22,29 +22,29 @@ app.config['MYSQL_DB'] = 'pythonlogin'
 mysql = MySQL(app)
 
 # Load your trained model
-model = load_model(filepath='model/VGG_model.h5')
+# model = load_model(filepath='model/VGG_model.h5')
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    if request.method == 'POST':
-        # Get the image URL from the hidden input field in the form
-        image_url = request.form['imageURL']
-        if image_url:
-            # Load and preprocess the image
-            img = image.load_img(image_url, target_size=(224, 224))
-            img_array = image.img_to_array(img)
-            img_array = np.expand_dims(img_array, axis=0)
-            img_array = preprocess_input(img_array)
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     if request.method == 'POST':
+#         # Get the image URL from the hidden input field in the form
+#         image_url = request.form['imageURL']
+#         if image_url:
+#             # Load and preprocess the image
+#             img = image.load_img(image_url, target_size=(224, 224))
+#             img_array = image.img_to_array(img)
+#             img_array = np.expand_dims(img_array, axis=0)
+#             img_array = preprocess_input(img_array)
 
-            # Make prediction
-            prediction = model.predict(img_array)
-            if prediction[0][0] == 1:
-                result = "Brain Tumor detected"
-            else:
-                result = "No Brain Tumor"
+#             # Make prediction
+#             prediction = model.predict(img_array)
+#             if prediction[0][0] == 1:
+#                 result = "Brain Tumor detected"
+#             else:
+#                 result = "No Brain Tumor"
 
-            return result
+#             return result
 
 
 def preview():

@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block css %}
+<link href="{% static 'css/login.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<!--Login Start-->
+<section class="login" id="login">
+    <form action="/login" method="post">
+        <div class="mycontainer">
+            <div class="row">
+                <div class="title text-center">
+                    <h1>Login</h1>
+                </div>
+
+                <label for="username"><b>Username</b></label>
+                <input type="text" name="username" placeholder="Enter Username" id="username" required>
+
+                <label for="password"><b>Password</b></label>
+                <input type="password" name="password" placeholder="Enter Password" id="password" required>
+                <div class="msg">{{ msg }}</div>
+
+                <button type="submit">Login</button>
+                <label>
+                    <input type="checkbox" checked="checked" name="remember"> Remember me
+                </label>
+            </div>
+        </div>
+    </form>
+</section>
+<script src="static/js/app.js"></script>
+<!--Login End-->
+{% endblock content %}

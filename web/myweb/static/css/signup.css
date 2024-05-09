@@ -58,6 +58,13 @@ hr {
   background-color: rgba(250, 23, 23, 0.89);
 }
 
+.error-msg {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px; /* Thêm khoảng cách giữa thông báo lỗi và ô input */
+}
+
+
 /* Add a blue text color to links */
 a {
   color: rgb(255, 10, 1);
@@ -79,3 +86,4 @@ a:hover{
       align-items: center;
   }
 }
+

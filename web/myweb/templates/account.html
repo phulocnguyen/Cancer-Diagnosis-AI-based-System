@@ -1,0 +1,11 @@
+{% extends 'main.html' %} {% load static %} {% block css %}
+<link href="{% static 'css/preview.css' %}" rel="stylesheet" />
+{% endblock %} {% block content %}
+<!--ACCOUNT Start-->
+<h1>Account Information</h1>
+<p><strong>Name:</strong> {{ customer.full_name }}</p>
+<p><strong>Email:</strong> {{ customer.email }}</p>
+
+<a href="/logout" id="logoutButton">Logout</a>
+<!--ACCOUNT End-->
+{% endblock content %}

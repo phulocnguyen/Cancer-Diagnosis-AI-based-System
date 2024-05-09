@@ -49,8 +49,9 @@ def signup(request):
             customer = Customer.objects.create(user=user, email=email, password=password, full_name=full_name)
             
             # Đăng nhập người dùng tự động sau khi đăng ký thành công
-            #user = authenticate(username=username, password=password) # type: ignore
-            #login(request, user)
+            user = authenticate(username=username, password=password) # type: ignore
+            login(request, user)
+            request.session['logged_in'] = True  # Thiết lập biến session để đánh dấu đã đăng nhập
             
             return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng ký thành công
     else:
@@ -62,10 +63,28 @@ def login_view(request):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            # login(request, user)  
+            login(request, user)  
+            request.session['logged_in'] = True  # Thiết lập biến session để đánh dấu đã đăng nhập
+
             return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng nhập thành công
         else:
             msg = "Invalid username or password. Please try again."
             return render(request, 'login.html', {'msg': msg})
     else:
         return render(request, 'login.html')
+    
+def account(request):
+    # Truy vấn thông tin khách hàng từ cơ sở dữ liệu
+    if request.user.is_authenticated:
+        customer = Customer.objects.get(user=request.user)
+        return render(request, 'account.html', {'customer': customer})
+    else:
+        # Xử lý trường hợp người dùng chưa đăng nhập
+        return render(request, 'login.html')  # Hoặc chuyển hướng đến trang đăng nhập
+
+from django.contrib.auth import logout
+
+def logout_view(request):
+    logout(request)
+    request.session['logged_in'] = False
+    return redirect('/')  # Chuyển hướng sau khi đăng xuất

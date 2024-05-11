@@ -1,0 +1,18 @@
+{% extends 'main.html' %} {% load static %} 
+{% block css %} {% endblock %} 
+{% block content %}
+<h1>Brain Tumor Prediction</h1>
+<form
+  action="{% url 'prediction' %}"
+  method="post"
+  enctype="multipart/form-data"
+>
+  {% csrf_token %}
+  <input type="file" name="image" />
+  <button type="submit">Predict</button>
+</form>
+{% if result %}
+<h2>Prediction Result: {{ result }}</h2>
+<img src="{% static 'userdata/test.jpg' %}" alt="Uploaded Image">
+{% endif %} 
+{% endblock %}

@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .models import *
+from django.http import HttpResponse
+import os
+
+from .module import load_image, prediction
 
 # Create your views here.
 def abstract(request):
@@ -88,3 +92,25 @@ def logout_view(request):
     logout(request)
     request.session['logged_in'] = False
     return redirect('/')  # Chuyển hướng sau khi đăng xuất
+
+def prediction_view(request):
+    if request.method == 'POST' and request.FILES['image']:
+        image_file = request.FILES['image']
+        image_path = 'myweb/static/userdata/test.jpg'
+        
+        # Kiểm tra xem file test.jpg đã tồn tại chưa
+        if os.path.exists(image_path):
+            os.remove(image_path)  # Nếu tồn tại, xóa file cũ
+        
+        # Lưu file ảnh mới
+        with open(image_path, 'wb+') as destination:
+            for chunk in image_file.chunks():
+                destination.write(chunk)
+        
+        # Load ảnh và dự đoán
+        image = load_image(image_path)
+        result = prediction(image)
+        # result = "ok"
+        return render(request, 'prediction.html', {'result': result})
+    
+    return render(request, 'prediction.html')

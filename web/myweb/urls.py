@@ -14,4 +14,5 @@ urlpatterns = [
 	path('upload/', views.upload, name="upload"),
     path('account/', views.account, name="account"),
 	path('logout/', views.logout_view, name='logout'),
+   	path('prediction/', views.prediction_view, name='prediction'),
 ]

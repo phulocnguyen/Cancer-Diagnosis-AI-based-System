@@ -5,7 +5,7 @@ from .models import *
 from django.http import HttpResponse
 import os
 
-from .module import load_image, prediction
+from .module import *
 
 # Create your views here.
 def abstract(request):
@@ -110,10 +110,18 @@ def prediction_view(request):
             for chunk in image_file.chunks():
                 destination.write(chunk)
         
-        # Load ảnh và dự đoán
+        # Load ảnh
         image = load_image(image_path)
-        result = prediction(image)
-        return render(request, 'prediction.html', {'result': result})
-    
-    return render(request, 'prediction.html')
         
+        # Xác định phương pháp dự đoán từ form
+        prediction_method = request.POST.get('prediction_method')
+        if prediction_method == '1':
+            result = prediction_1(image)
+        elif prediction_method == '2':
+            result = prediction_2(image)
+        else:
+            return render(request, 'prediction.html', {'msg': 'Invalid prediction method'})
+        
+        return render(request, 'prediction.html', {'result': result})
+    else:
+        return render(request, 'prediction.html')

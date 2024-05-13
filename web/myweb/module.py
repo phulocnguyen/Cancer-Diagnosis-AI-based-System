@@ -17,7 +17,7 @@ def load_image(image_path: str):
     return normalized_img
 
 
-def prediction(img):
+def prediction_1(img):
     model = load_model('ModelAI/model/BrainTumor.h5')
     res = model.predict(img)
     result = res.argmax()
@@ -30,6 +30,8 @@ def prediction(img):
     else:
         return "pituiraty"
 
+def prediction_2(img):
+    return "coming soon"
 
 def main():
     image = load_image('myweb/static/userdata/test.jpg')

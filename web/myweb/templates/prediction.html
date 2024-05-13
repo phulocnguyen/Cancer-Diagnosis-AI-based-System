@@ -1,18 +1,28 @@
-{% extends 'main.html' %} {% load static %} 
-{% block css %} {% endblock %} 
+{% extends 'main.html' %} 
+{% load static %} 
+{% block css %} 
+<link href="{% static 'css/prediction.css' %}" rel="stylesheet" />
+{% endblock %} 
 {% block content %}
-<h1>Brain Tumor Prediction</h1>
-<form
-  action="{% url 'prediction' %}"
-  method="post"
-  enctype="multipart/form-data"
->
-  {% csrf_token %}
-  <input type="file" name="image" />
-  <button type="submit">Predict</button>
-</form>
-{% if result %}
-<h2>Prediction Result: {{ result }}</h2>
-<img src="{% static 'userdata/test.jpg' %}" alt="Uploaded Image">
-{% endif %} 
+<div class="container-prediction">
+  <div class="prediction-form">
+    <h1>Brain Tumor Prediction</h1>
+    <form action="{% url 'prediction' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="image" />
+      <select name="prediction_method">
+        <option value="1">Prediction 1</option>
+        <option value="2">Prediction 2</option>
+      </select>
+      <button type="submit">Predict</button>
+      <div class="msg" style="color: red">{{ msg }}</div>
+    </form>
+  </div>
+  {% if result %}
+  <div class="prediction-result">
+    <h2>Prediction Result: {{ result }}</h2>
+    <img src="{% static 'userdata/test.jpg' %}" alt="Uploaded Image">
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

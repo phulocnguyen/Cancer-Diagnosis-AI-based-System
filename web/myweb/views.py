@@ -94,7 +94,10 @@ def logout_view(request):
     return redirect('/')  # Chuyển hướng sau khi đăng xuất
 
 def prediction_view(request):
-    if request.method == 'POST' and request.FILES['image']:
+    if request.method == 'POST':
+        if 'image' not in request.FILES:
+            return render(request, 'prediction.html', {'msg': 'error'})
+        
         image_file = request.FILES['image']
         image_path = 'myweb/static/userdata/test.jpg'
         
@@ -110,7 +113,7 @@ def prediction_view(request):
         # Load ảnh và dự đoán
         image = load_image(image_path)
         result = prediction(image)
-        # result = "ok"
         return render(request, 'prediction.html', {'result': result})
     
     return render(request, 'prediction.html')
+        

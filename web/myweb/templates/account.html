@@ -1,11 +1,84 @@
-{% extends 'main.html' %} {% load static %} {% block css %}
-<link href="{% static 'css/preview.css' %}" rel="stylesheet" />
-{% endblock %} {% block content %}
-<!--ACCOUNT Start-->
-<h1>Account Information</h1>
-<p><strong>Name:</strong> {{ customer.full_name }}</p>
-<p><strong>Email:</strong> {{ customer.email }}</p>
+{% extends 'main.html' %}
+{% load static %}
 
-<a href="/logout" id="logoutButton">Logout</a>
-<!--ACCOUNT End-->
-{% endblock content %}
+{% block main %}
+<!-- ======= Breadcrumbs Section ======= -->
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Account Page</h2>
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li>Account Page</li>
+            </ol>
+        </div>
+    </div>
+</section><!-- End Breadcrumbs Section -->
+
+<section class="inner-page pt-4">
+    <div class="container">
+        <link href="{% static 'assets/css/account.css' %}" rel="stylesheet">
+
+        <div class="cont">
+            <div class="form sign-in">
+                <h2>Welcome</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <label>
+                        <span>Username</span>
+                        <input type="text" name="username" required />
+                    </label>
+                    <label>
+                        <span>Password</span>
+                        <input type="password" name="password" required />
+                    </label>
+                    <p class="forgot-pass">Forgot password?</p>
+                    <button type="submit" class="submit" name="sign-in">Sign In</button>
+                </form>
+            </div>
+            <div class="sub-cont">
+                <div class="img">
+                    <div class="img__text m--up">
+                        <h3>Don't have an account? Please Sign up!</h3>
+                    </div>
+                    <div class="img__text m--in">
+                        <h3>If you already have an account, just sign in.</h3>
+                    </div>
+                    <div class="img__btn">
+                        <span class="m--up">Sign Up</span>
+                        <span class="m--in">Sign In</span>
+                    </div>
+                </div>
+                <div class="form sign-up">
+                    <h2>Create your Account</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <label>
+                            <span>Username</span>
+                            <input type="text" name="username" required />
+                        </label>
+                        <label>
+                            <span>Name</span>
+                            <input type="text" name="full_name" required />
+                        </label>
+                        <label>
+                            <span>Email</span>
+                            <input type="email" name="email" required />
+                        </label>
+                        <label>
+                            <span>Password</span>
+                            <input type="password" name="password" required />
+                        </label>
+                        <button type="submit" class="submit" name="sign-up">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.querySelector('.img__btn').addEventListener('click', function () {
+                document.querySelector('.cont').classList.toggle('s--signup');
+            });
+        </script>
+    </div>
+</section>
+{% endblock %}

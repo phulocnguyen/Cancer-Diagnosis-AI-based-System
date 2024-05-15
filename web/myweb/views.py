@@ -4,89 +4,58 @@ from django.contrib.auth.models import User
 from .models import *
 from django.http import HttpResponse
 import os
-
+from django.contrib.auth import logout
 from .module import *
 
-# Create your views here.
-def abstract(request):
-    context={}
-    return render(request, 'abstract.html', context)
 
-def contact(request):
-    context={}
-    return render(request, 'contact.html', context)
 
-def dashboard(request):
+def home(request):
     context={}
-    return render(request, 'dashboard.html', context)
+    return render(request, 'home.html', context)
 
-def index(request):
-    context={}
-    return render(request, 'index.html', context)
-
-def preview(request):
-    context={}
-    return render(request, 'preview.html', context)
-
-def upload(request):
-    context={}
-    return render(request, 'upload.html', context)
-
-def signup(request):
+def account_view(request):
+    msg = None
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        full_name = request.POST.get('full_name') 
-        
-        if User.objects.filter(username=username).exists():
-            msg = "Username already exists"
-            return render(request, 'signup.html', {'msg': msg})
-        elif Customer.objects.filter(email=email).exists():
-            msg = "Email already exists"
-            return render(request, 'signup.html', {'msg': msg})
-        else:
-            # Tạo người dùng mới
-            user = User.objects.create_user(username=username, email=email, password=password)
-            
-            # Tạo khách hàng mới và liên kết với người dùng tạo mới
-            customer = Customer.objects.create(user=user, email=email, password=password, full_name=full_name)
-            
-            # Đăng nhập người dùng tự động sau khi đăng ký thành công
-            user = authenticate(username=username, password=password) # type: ignore
-            login(request, user)
-            request.session['logged_in'] = True  # Thiết lập biến session để đánh dấu đã đăng nhập
-            
-            return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng ký thành công
-    else:
-        return render(request, 'signup.html')
+        if 'sign-in' in request.POST:
+            # Xử lý đăng nhập
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                request.session['logged_in'] = True 
+                return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng nhập thành công
+            else:
+                msg = 'Invalid username or password'
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)  
-            request.session['logged_in'] = True  # Thiết lập biến session để đánh dấu đã đăng nhập
+        elif 'sign-up' in request.POST:
+            # Xử lý đăng ký
+            username = request.POST['username']
+            email = request.POST['email']
+            password = request.POST['password']
+            full_name = request.POST['full_name']
 
-            return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng nhập thành công
-        else:
-            msg = "Invalid username or password. Please try again."
-            return render(request, 'login.html', {'msg': msg})
-    else:
-        return render(request, 'login.html')
-    
-def account(request):
-    # Truy vấn thông tin khách hàng từ cơ sở dữ liệu
-    if request.user.is_authenticated:
-        customer = Customer.objects.get(user=request.user)
-        return render(request, 'account.html', {'customer': customer})
-    else:
-        # Xử lý trường hợp người dùng chưa đăng nhập
-        return render(request, 'login.html')  # Hoặc chuyển hướng đến trang đăng nhập
+            # Kiểm tra username đã tồn tại chưa
+            if User.objects.filter(username=username).exists():
+                msg = 'Username already exists'
 
-from django.contrib.auth import logout
+            # Kiểm tra email đã tồn tại chưa
+            elif User.objects.filter(email=email).exists():
+                msg = 'Email already exists'
+
+            else:
+                # Tạo người dùng mới
+                user = User.objects.create_user(username=username, email=email, password=password)
+                
+                # Tạo thông tin khách hàng mới
+                customer = Customer.objects.create(user=user, email=email, full_name=full_name)
+                
+                # Đăng nhập người dùng mới tạo
+                login(request, user)
+                request.session['logged_in'] = True 
+                return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng ký thành công
+
+    return render(request, 'account.html', {'msg': msg})
 
 def logout_view(request):
     logout(request)

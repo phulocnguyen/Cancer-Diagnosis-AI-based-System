@@ -1,28 +1,45 @@
-{% extends 'main.html' %} 
-{% load static %} 
-{% block css %} 
-<link href="{% static 'css/prediction.css' %}" rel="stylesheet" />
-{% endblock %} 
-{% block content %}
-<div class="container-prediction">
-  <div class="prediction-form">
-    <h1>Brain Tumor Prediction</h1>
-    <form action="{% url 'prediction' %}" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <input type="file" name="image" />
-      <select name="prediction_method">
-        <option value="1">Prediction 1</option>
-        <option value="2">Prediction 2</option>
-      </select>
-      <button type="submit">Predict</button>
-      <div class="msg" style="color: red">{{ msg }}</div>
-    </form>
-  </div>
-  {% if result %}
-  <div class="prediction-result">
-    <h2>Prediction Result: {{ result }}</h2>
-    <img src="{% static 'userdata/test.jpg' %}" alt="Uploaded Image">
-  </div>
-  {% endif %}
-</div>
+{% extends 'main.html' %}
+{% load static %}
+
+{% block main %}
+<!-- ======= Breadcrumbs Section ======= -->
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Predict Page</h2>
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li>Predict Page</li>
+            </ol>
+        </div>
+    </div>
+</section><!-- End Breadcrumbs Section -->
+
+<section class="inner-page pt-4">
+    <div class="container">
+        <link href="{% static 'assets/css/prediction.css' %}" rel="stylesheet">
+
+        <div class="container-prediction">
+            <div class="prediction-form">
+                <h1>Brain Tumor Prediction</h1>
+                <form action="{% url 'prediction_view' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="image" />
+                    <select name="prediction_method">
+                        <option value="1">Prediction 1</option>
+                        <option value="2">Prediction 2</option>
+                    </select>
+                    <button type="submit">Predict</button>
+                    <div class="msg" style="color: red">{{ msg }}</div>
+                </form>
+            </div>
+            {% if result %}
+            <div class="prediction-result">
+                <h2>Prediction Result: {{ result }}</h2>
+                <img src="{% static 'userdata/test.jpg' %}" alt="Uploaded Image">
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
 {% endblock %}

@@ -1,61 +1,22 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .models import *
 from django.http import HttpResponse
 import os
 from django.contrib.auth import logout
 from .module import *
+from .forms import *
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.contrib.auth import authenticate, login, logout
 
 
 
 def home(request):
     context={}
     return render(request, 'home.html', context)
-
-def account_view(request):
-    msg = None
-    if request.method == 'POST':
-        if 'sign-in' in request.POST:
-            # Xử lý đăng nhập
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                request.session['logged_in'] = True 
-                return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng nhập thành công
-            else:
-                msg = 'Invalid username or password'
-
-        elif 'sign-up' in request.POST:
-            # Xử lý đăng ký
-            username = request.POST['username']
-            email = request.POST['email']
-            password = request.POST['password']
-            full_name = request.POST['full_name']
-
-            # Kiểm tra username đã tồn tại chưa
-            if User.objects.filter(username=username).exists():
-                msg = 'Username already exists'
-
-            # Kiểm tra email đã tồn tại chưa
-            elif User.objects.filter(email=email).exists():
-                msg = 'Email already exists'
-
-            else:
-                # Tạo người dùng mới
-                user = User.objects.create_user(username=username, email=email, password=password)
-                
-                # Tạo thông tin khách hàng mới
-                customer = Customer.objects.create(user=user, email=email, full_name=full_name)
-                
-                # Đăng nhập người dùng mới tạo
-                login(request, user)
-                request.session['logged_in'] = True 
-                return redirect('/')  # Chuyển hướng đến trang chính sau khi đăng ký thành công
-
-    return render(request, 'account.html', {'msg': msg})
 
 def logout_view(request):
     logout(request)
@@ -94,3 +55,118 @@ def prediction_view(request):
         return render(request, 'prediction.html', {'result': result})
     else:
         return render(request, 'prediction.html')
+    
+
+def verify_email(request, username):
+    user = get_user_model().objects.get(username=username)
+    user_otp = OtpToken.objects.filter(user=user).last()
+    
+    if request.method == 'POST':
+        # valid token
+        if user_otp.otp_code == request.POST['otp_code']:
+            # checking for expired token
+            if user_otp.otp_expires_at > timezone.now():
+                user.is_active = True
+                user.save()
+                messages.success(request, "Account activated successfully!! You can Login.")
+                return redirect("account_view")
+            # expired token
+            else:
+                messages.warning(request, "The OTP has expired, get a new OTP!")
+                return redirect("verify-email", username=user.username)
+        # invalid otp code
+        else:
+            messages.warning(request, "Invalid OTP entered, enter a valid OTP!")
+            return redirect("verify-email", username=user.username)
+        
+    context = {}
+    return render(request, "verify_token.html", context)
+
+
+
+
+def resend_otp(request):
+    if request.method == 'POST':
+        user_email = request.POST["otp_email"]
+        
+        if get_user_model().objects.filter(email=user_email).exists():
+            user = get_user_model().objects.get(email=user_email)
+            otp = OtpToken.objects.create(user=user, otp_expires_at=timezone.now() + timezone.timedelta(minutes=5))
+            
+            
+            # email variables
+            subject="Email Verification"
+            message = f"""
+                                Hi {user.username}, here is your OTP {otp.otp_code} 
+                                it expires in 5 minute, use the url below to redirect back to the website
+                                http://127.0.0.1:8000/verify-email/{user.username}
+                                
+                                """
+            sender = "brainprojectbnk@gmail.com"
+            receiver = [user.email, ]
+        
+        
+            # send email
+            send_mail(
+                    subject,
+                    message,
+                    sender,
+                    receiver,
+                    fail_silently=False,
+                )
+            
+            messages.success(request, "A new OTP has been sent to your email-address")
+            return redirect("verify-email", username=user.username)
+
+        else:
+            messages.warning(request, "This email dosen't exist in the database")
+            return redirect("resend-otp")
+        
+           
+    context = {}
+    return render(request, "resend_otp.html", context)
+
+
+
+def account_view(request):
+    form = RegisterForm()
+    context = {"form": form}  # Khởi tạo context trước khi kiểm tra method
+
+    if request.method == 'POST':
+        if 'sign-in' in request.POST:
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(request, username=username, password=password)
+        
+            if user is not None:    
+                login(request, user)
+                request.session['logged_in'] = True
+                messages.success(request, f"Hi {request.user.username}, you are now logged-in")
+                storage = messages.get_messages(request)
+                storage.used = True
+                return redirect('/')
+            else:
+                messages.warning(request, "Username or Password is incorrect! Try again.")
+                return redirect("account_view")
+        elif 'sign-up' in request.POST:
+            # Xử lý đăng ký
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data['email']
+                username = form.cleaned_data['username']
+                if CustomUser.objects.filter(email=email).exists():
+                    messages.warning(request, "Email already exists")
+                elif CustomUser.objects.filter(email=email, is_active=False).exists():
+                    messages.warning(request, "Email not verified")
+                else:
+                    form.save()
+                    messages.success(request, "Account created successfully! An OTP was sent to your Email")
+                    return redirect("verify-email", username=request.POST['username'])
+            else:
+                if 'email' in form.errors:
+                    messages.warning(request, "Invalid email format")
+                if 'username' in form.errors:
+                    messages.warning(request, "Invalid username format")
+    return render(request, "account.html", {"form": form})
+
+

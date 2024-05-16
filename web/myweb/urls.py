@@ -4,7 +4,10 @@ from . import views
 
 urlpatterns = [
 	path('', views.home, name="home"),
-	path('account/', views.account_view, name="account"),
+	path('account/', views.account_view, name="account_view"),
     path('logout/', views.logout_view, name='logout'),
     path('prediction/', views.prediction_view, name='prediction_view'),
+    path("verify-email/<slug:username>", views.verify_email, name="verify-email"),
+    path("resend-otp/", views.resend_otp, name="resend-otp"),
+    
 ]

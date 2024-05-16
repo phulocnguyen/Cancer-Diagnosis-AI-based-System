@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block main %}
+<!-- ======= Breadcrumbs Section ======= -->
+<section class="breadcrumbs">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Account Page</h2>
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li>Verify Email</li>
+            </ol>
+        </div>
+    </div>
+</section><!-- End Breadcrumbs Section -->
+
+<section class="inner-page pt-4">
+    <div class="container">
+
+        {% for message in messages %}
+
+        <div class="alert alert-{{message.tags}}" role="alert" style="margin-top: 30px">
+            <h5>{{message}}</h5>
+        </div>
+
+        {% endfor %}
+
+        <style>
+            form {
+                width: 500px;
+                height: auto;
+                padding: 20px 20px 20px 20px;
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+                margin: 50px auto;
+                border-radius: 10px;
+            }
+
+            form p {
+                text-align: center;
+            }
+
+            form h3 {
+                text-align: center
+            }
+        </style>
+
+
+        <form action="" method='POST'>
+            {% csrf_token %}
+            <h3><strong>Verify Email</strong></h3>
+            <div class="mb-3">
+                <label class="form-label">OTP</label>
+                <input class="form-control" name="otp_code" placeholder="Enter OTP">
+            </div>
+
+            <button class="btn btn-primary" style="width:100%">Activate Account</button>
+            <p>Need a new OTP? <a href="{% url 'resend-otp' %}">Resend OTP</a></p>
+
+        </form>
+
+    </div>
+</section>
+{% endblock %}

@@ -17,6 +17,16 @@
 
 <section class="inner-page pt-4">
     <div class="container">
+
+        {% for message in messages %}
+
+        <div class="alert alert-{{message.tags}}" role="alert" style="margin-top: 30px">
+            <h5>{{message}}</h5>
+        </div>
+
+        {% endfor %}
+
+
         <link href="{% static 'assets/css/account.css' %}" rel="stylesheet">
 
         <div class="cont">
@@ -34,6 +44,7 @@
                     </label>
                     <p class="forgot-pass">Forgot password?</p>
                     <button type="submit" class="submit" name="sign-in">Sign In</button>
+                    
                 </form>
             </div>
             <div class="sub-cont">
@@ -53,22 +64,7 @@
                     <h2>Create your Account</h2>
                     <form method="post">
                         {% csrf_token %}
-                        <label>
-                            <span>Username</span>
-                            <input type="text" name="username" required />
-                        </label>
-                        <label>
-                            <span>Name</span>
-                            <input type="text" name="full_name" required />
-                        </label>
-                        <label>
-                            <span>Email</span>
-                            <input type="email" name="email" required />
-                        </label>
-                        <label>
-                            <span>Password</span>
-                            <input type="password" name="password" required />
-                        </label>
+                        {{ form.as_p }}
                         <button type="submit" class="submit" name="sign-up">Sign Up</button>
                     </form>
                 </div>

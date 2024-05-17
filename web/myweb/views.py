@@ -134,14 +134,13 @@ def account_view(request):
 
     if request.method == 'POST':
         if 'sign-in' in request.POST:
-            username = request.POST['username']
+            email = request.POST['email']
             password = request.POST['password']
-            user = authenticate(request, username=username, password=password)
+            user = authenticate(request, email=email, password=password)
         
             if user is not None:    
                 login(request, user)
                 request.session['logged_in'] = True
-                messages.success(request, f"Hi {request.user.username}, you are now logged-in")
                 storage = messages.get_messages(request)
                 storage.used = True
                 return redirect('/')

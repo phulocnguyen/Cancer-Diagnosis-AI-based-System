@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            /* Màu xám nhạt */
+            font-family: Arial, sans-serif;
+            /* Font chữ mặc định */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            /* Màu chữ đen */
+        }
+
+        .success-message,
+        .error-message {
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            background-color: #7FFF7F;
+            /* Màu xanh lá cây */
+            color: #006400;
+            /* Màu xanh lá cây tối */
+        }
+
+        .error-message {
+            background-color: #FF6961;
+            /* Màu đỏ */
+            color: #8B0000;
+            /* Màu đỏ đậm */
+        }
+    </style>
+</head>
+
+<body>
+    {% if success_message %}
+    <p class="success-message">{{ success_message }}</p>
+    {% endif %}
+    {% if error_message %}
+    <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+</body>
+
+</html>

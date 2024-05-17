@@ -15,8 +15,32 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def home(request):
-    context={}
-    return render(request, 'home.html', context)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+
+        if not all([name, email, subject, message]):
+            error_message = 'Please fill in all fields.'
+            return render(request, 'feedback.html', {'error_message': error_message})
+
+        try:
+            # Gửi email đến email của công ty
+            send_mail(
+                subject,
+                f'Tên: {name}\nEmail: {email}\n\n{message}',
+                'brainprojectbnk@gmail.com',
+                ['brainprojectbnk@gmail.com'],
+                fail_silently=False,
+            )
+            success_message = 'Your message has been sent successfully!'
+            return render(request, 'feedback.html', {'success_message': success_message})
+        except Exception as e:
+            error_message = 'An error occurred while sending the message. Please try again later.'
+            return render(request, 'feedback.html', {'error_message': error_message})
+
+    return render(request, 'home.html')
 
 def logout_view(request):
     logout(request)
@@ -47,10 +71,21 @@ def prediction_view(request):
         prediction_method = request.POST.get('prediction_method')
         if prediction_method == '1':
             result = prediction_1(image)
+            diagnosis_type = 'Type 1 Diagnosis'  # Giá trị mẫu, thay thế bằng logic của bạn
         elif prediction_method == '2':
             result = prediction_2(image)
+            diagnosis_type = 'Type 2 Diagnosis'  # Giá trị mẫu, thay thế bằng logic của bạn
         else:
             return render(request, 'prediction.html', {'msg': 'Invalid prediction method'})
+        
+        # Lưu kết quả vào cơ sở dữ liệu nếu người dùng đã đăng nhập
+        if request.user.is_authenticated:
+            PredictionResult.objects.create(
+                user=request.user,
+                prediction_method=prediction_method,
+                result=result,
+                diagnosis_type=diagnosis_type
+            )
         
         return render(request, 'prediction.html', {'result': result})
     else:
@@ -169,3 +204,14 @@ def account_view(request):
     return render(request, "account.html", {"form": form})
 
 
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
+from .models import PredictionResult
+
+def profile_view(request):
+    if request.user.is_authenticated:
+        user = request.user
+        predictions = PredictionResult.objects.filter(user=user).order_by('-created_at')
+        return render(request, 'profile.html', {'predictions': predictions})
+    return redirect('/')

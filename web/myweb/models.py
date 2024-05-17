@@ -24,4 +24,13 @@ class OtpToken(models.Model):
     
     def __str__(self):
         return self.user.email
+
+class PredictionResult(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    prediction_method = models.CharField(max_length=10)
+    result = models.TextField()
+    diagnosis_type = models.CharField(max_length=255, default='Unknown')  # Trường mới
+    created_at = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f"{self.user.email if self.user else 'Anonymous'} - {self.result}"

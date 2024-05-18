@@ -10,10 +10,10 @@ def get_predictions(t1ce_path, flair_path, slice_to_plot):
     t1_ce = nib.load(t1ce_path).get_fdata()
     flair = nib.load(flair_path).get_fdata()
 
-    X = np.empty((75, 240, 240, 2))
+    X = np.empty((75, 128, 128, 2))
     for j in range(75):
-        X[j, :, :, 0] = cv2.resize(flair[:,:,j + 60], (240, 240))
-        X[j, :, :, 1] = cv2.resize(t1_ce[:,:,j + 60], (240, 240))
+        X[j, :, :, 0] = cv2.resize(flair[:,:,j + 60], (128, 128))
+        X[j, :, :, 1] = cv2.resize(t1_ce[:,:,j + 60], (128, 128))
 
     IMG_SIZE = 128
     input_layer = Input((IMG_SIZE, IMG_SIZE, 2))

@@ -137,3 +137,6 @@ EMAIL_HOST_USER = 'brainprojectbnk@gmail.com'
 EMAIL_HOST_PASSWORD = 'iifx dbwu krtd nslx'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False 
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB in bytes
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB in bytes

@@ -4,6 +4,7 @@ import os
 from tensorflow import keras
 import cv2
 from keras.models import load_model
+from . import configmodel
 
 IMAGE_SIZE = 150
 
@@ -30,13 +31,18 @@ def prediction_1(img):
     else:
         return "pituiraty"
 
-def prediction_2(img1, img2):
-    return "coming soon"
+def prediction_2():
+    t1ce_path = 'myweb/static/userdata/t1ce.nii'
+    flair_path = 'myweb/static/userdata/flair.nii'
+    slice_to_plot = 50
 
-def main():
-    image = load_image('myweb/static/userdata/test.jpg')
-    print(prediction(image))
+    result_image = configmodel.get_predictions(t1ce_path, flair_path, slice_to_plot)
 
+    # Xóa tệp cũ nếu tồn tại
+    if os.path.exists('myweb/static/userdata/prediction_result.png'):
+        os.remove('myweb/static/userdata/prediction_result.png')
 
-if __name__ == "__main__":
-    main()
+    # Lưu hình ảnh mới
+    result_image.save('myweb/static/userdata/prediction_result.png')
+    
+    return ""

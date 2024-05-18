@@ -72,6 +72,7 @@ def prediction_view(request):
             image = load_image(image_path)
             result = prediction_1(image)
             diagnosis_type = 'Type 1 Diagnosis'
+            prediction_type = 1
         
         elif prediction_method == '2':
             if 'image1' not in request.FILES or 'image2' not in request.FILES:
@@ -79,8 +80,8 @@ def prediction_view(request):
             
             image1_file = request.FILES['image1']
             image2_file = request.FILES['image2']
-            image1_path = 'myweb/static/userdata/test1.jpg'
-            image2_path = 'myweb/static/userdata/test2.jpg'
+            image1_path = 'myweb/static/userdata/flair.nii'
+            image2_path = 'myweb/static/userdata/t1ce.nii'
             
             if os.path.exists(image1_path):
                 os.remove(image1_path)
@@ -95,11 +96,10 @@ def prediction_view(request):
                 for chunk in image2_file.chunks():
                     destination.write(chunk)
             
-            # Load and process the images
-            image1 = load_image(image1_path)
-            image2 = load_image(image2_path)
-            result = prediction_2(image1, image2)
+            
+            result = prediction_2()
             diagnosis_type = 'Type 2 Diagnosis'
+            prediction_type = 2
         
         else:
             return render(request, 'prediction.html', {'msg': 'Invalid prediction method'})
@@ -113,7 +113,7 @@ def prediction_view(request):
                 diagnosis_type=diagnosis_type
             )
         
-        return render(request, 'prediction.html', {'result': result})
+        return render(request, 'prediction.html', {'result': result, 'prediction_type': prediction_type})
     
     return render(request, 'prediction.html')
     

@@ -30,7 +30,7 @@ def prediction_1(img):
     else:
         return "pituiraty"
 
-def prediction_2(img):
+def prediction_2(img1, img2):
     return "coming soon"
 
 def main():

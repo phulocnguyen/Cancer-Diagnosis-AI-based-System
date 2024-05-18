@@ -22,13 +22,26 @@
         <div class="container-prediction">
             <div class="prediction-form">
                 <h1>Brain Tumor Prediction</h1>
-                <form action="{% url 'prediction_view' %}" method="post" enctype="multipart/form-data">
+                <form id="predictionForm" action="{% url 'prediction_view' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input type="file" name="image" />
-                    <select name="prediction_method">
+                    <select id="predictionMethodSelect" name="prediction_method" onchange="handlePredictionChange()">
+                        <option value="">Choose Segment</option>
                         <option value="1">Prediction 1</option>
                         <option value="2">Prediction 2</option>
                     </select>
+                    
+                    <div id="prediction1Fields" style="display: none;">
+                        <label for="image1">Upload an image for Prediction 1:</label>
+                        <input type="file" name="image" id="image1" />
+                    </div>
+                    
+                    <div id="prediction2Fields" style="display: none;">
+                        <label for="image2_1">Upload first image for Prediction 2:</label>
+                        <input type="file" name="image1" id="image2_1" />
+                        <label for="image2_2">Upload second image for Prediction 2:</label>
+                        <input type="file" name="image2" id="image2_2" />
+                    </div>
+                    
                     <button type="submit">Predict</button>
                     <div class="msg" style="color: red">{{ msg }}</div>
                 </form>
@@ -40,6 +53,30 @@
             </div>
             {% endif %}
         </div>
+        
+        <script>
+            function handlePredictionChange() {
+                var select = document.getElementById("predictionMethodSelect");
+                var prediction1Fields = document.getElementById("prediction1Fields");
+                var prediction2Fields = document.getElementById("prediction2Fields");
+        
+                if (select.value === "1") {
+                    prediction1Fields.style.display = "block";
+                    prediction2Fields.style.display = "none";
+                } else if (select.value === "2") {
+                    prediction1Fields.style.display = "none";
+                    prediction2Fields.style.display = "block";
+                } else {
+                    prediction1Fields.style.display = "none";
+                    prediction2Fields.style.display = "none";
+                }
+            }
+        
+            window.onload = handlePredictionChange;
+        </script>
+        
+        
+        
     </div>
 </section>
 {% endblock %}

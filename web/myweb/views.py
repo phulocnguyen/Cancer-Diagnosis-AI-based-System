@@ -49,36 +49,62 @@ def logout_view(request):
 
 def prediction_view(request):
     if request.method == 'POST':
-        if 'image' not in request.FILES:
-            return render(request, 'prediction.html', {'msg': 'error'})
-        
-        image_file = request.FILES['image']
-        image_path = 'myweb/static/userdata/test.jpg'
-        
-        # Kiểm tra xem file test.jpg đã tồn tại chưa
-        if os.path.exists(image_path):
-            os.remove(image_path)  # Nếu tồn tại, xóa file cũ
-        
-        # Lưu file ảnh mới
-        with open(image_path, 'wb+') as destination:
-            for chunk in image_file.chunks():
-                destination.write(chunk)
-        
-        # Load ảnh
-        image = load_image(image_path)
-        
-        # Xác định phương pháp dự đoán từ form
         prediction_method = request.POST.get('prediction_method')
+        
+        if not prediction_method:
+            return render(request, 'prediction.html', {'msg': 'Please choose a prediction method.'})
+        
         if prediction_method == '1':
+            if 'image' not in request.FILES:
+                return render(request, 'prediction.html', {'msg': 'Please upload an image for Prediction 1.'})
+            
+            image_file = request.FILES['image']
+            image_path = 'myweb/static/userdata/test.jpg'
+            
+            if os.path.exists(image_path):
+                os.remove(image_path)
+            
+            with open(image_path, 'wb+') as destination:
+                for chunk in image_file.chunks():
+                    destination.write(chunk)
+            
+            # Load and process the image
+            image = load_image(image_path)
             result = prediction_1(image)
-            diagnosis_type = 'Type 1 Diagnosis'  # Giá trị mẫu, thay thế bằng logic của bạn
+            diagnosis_type = 'Type 1 Diagnosis'
+        
         elif prediction_method == '2':
-            result = prediction_2(image)
-            diagnosis_type = 'Type 2 Diagnosis'  # Giá trị mẫu, thay thế bằng logic của bạn
+            if 'image1' not in request.FILES or 'image2' not in request.FILES:
+                return render(request, 'prediction.html', {'msg': 'Please upload both images for Prediction 2.'})
+            
+            image1_file = request.FILES['image1']
+            image2_file = request.FILES['image2']
+            image1_path = 'myweb/static/userdata/test1.jpg'
+            image2_path = 'myweb/static/userdata/test2.jpg'
+            
+            if os.path.exists(image1_path):
+                os.remove(image1_path)
+            if os.path.exists(image2_path):
+                os.remove(image2_path)
+            
+            with open(image1_path, 'wb+') as destination:
+                for chunk in image1_file.chunks():
+                    destination.write(chunk)
+            
+            with open(image2_path, 'wb+') as destination:
+                for chunk in image2_file.chunks():
+                    destination.write(chunk)
+            
+            # Load and process the images
+            image1 = load_image(image1_path)
+            image2 = load_image(image2_path)
+            result = prediction_2(image1, image2)
+            diagnosis_type = 'Type 2 Diagnosis'
+        
         else:
             return render(request, 'prediction.html', {'msg': 'Invalid prediction method'})
         
-        # Lưu kết quả vào cơ sở dữ liệu nếu người dùng đã đăng nhập
+        # Save the result to the database if the user is authenticated
         if request.user.is_authenticated:
             PredictionResult.objects.create(
                 user=request.user,
@@ -88,8 +114,8 @@ def prediction_view(request):
             )
         
         return render(request, 'prediction.html', {'result': result})
-    else:
-        return render(request, 'prediction.html')
+    
+    return render(request, 'prediction.html')
     
 
 def verify_email(request, username):
@@ -209,9 +235,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from .models import PredictionResult
 
-def profile_view(request):
+def prediction_history_view(request):
     if request.user.is_authenticated:
         user = request.user
         predictions = PredictionResult.objects.filter(user=user).order_by('-created_at')
-        return render(request, 'profile.html', {'predictions': predictions})
+        return render(request, 'history.html', {'predictions': predictions})
     return redirect('/')

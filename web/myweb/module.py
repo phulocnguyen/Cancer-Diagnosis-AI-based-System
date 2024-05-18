@@ -45,4 +45,4 @@ def prediction_2():
     # Lưu hình ảnh mới
     result_image.save('myweb/static/userdata/prediction_result.png')
     
-    return ""
+    return "x"

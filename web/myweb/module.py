@@ -23,13 +23,13 @@ def prediction_1(img):
     res = model.predict(img)
     result = res.argmax()
     if result == 0:
-        return "glioma"
+        return "Glioma"
     elif result == 1:
-        return "meningioma"
+        return "Meningioma"
     elif result == 2:
-        return "no tumor"
+        return "No tumor"
     else:
-        return "pituiraty"
+        return "Pituiraty"
 
 def prediction_2():
     t1ce_path = 'myweb/static/userdata/t1ce.nii'
@@ -45,4 +45,4 @@ def prediction_2():
     # Lưu hình ảnh mới
     result_image.save('myweb/static/userdata/prediction_result.png')
     
-    return "x"
+    return "Location of tumor"

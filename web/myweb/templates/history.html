@@ -113,16 +113,16 @@
         <ul class="responsive-table">
             <li class="table-header">
                 <div class="col col-1">Method</div>
-                <div class="col col-2">Result</div>
                 <div class="col col-3">Type</div>
+                <div class="col col-2">Result</div>
                 <div class="col col-4">Created At</div>
             </li>
             {% if predictions %}
             {% for prediction in predictions %}
             <li class="table-row">
                 <div class="col col-1" data-label="Method">{{ prediction.prediction_method }}</div>
-                <div class="col col-2" data-label="Result">{{ prediction.result }}</div>
                 <div class="col col-3" data-label="Diagnosis Type">{{ prediction.diagnosis_type }}</div>
+                <div class="col col-2" data-label="Result">{{ prediction.result }}</div>
                 <div class="col col-4" data-label="Created At">{{ prediction.created_at }}</div>
             </li>
             {% endfor %}

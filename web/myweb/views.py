@@ -52,11 +52,11 @@ def prediction_view(request):
         prediction_method = request.POST.get('prediction_method')
         
         if not prediction_method:
-            return render(request, 'prediction.html', {'msg': 'Please choose a prediction method.'})
+            return render(request, 'prediction.html', {'msg': 'Please choose a detection method.'})
         
         if prediction_method == '1':
             if 'image' not in request.FILES:
-                return render(request, 'prediction.html', {'msg': 'Please upload an image for Prediction 1.'})
+                return render(request, 'prediction.html', {'msg': 'Please upload an image for detection.'})
             
             image_file = request.FILES['image']
             image_path = 'myweb/static/userdata/test.jpg'
@@ -71,12 +71,12 @@ def prediction_view(request):
             # Load and process the image
             image = load_image(image_path)
             result = prediction_1(image)
-            diagnosis_type = 'Type 1 Diagnosis'
+            diagnosis_type = 'Classification'
             prediction_type = 1
         
         elif prediction_method == '2':
             if 'image1' not in request.FILES or 'image2' not in request.FILES:
-                return render(request, 'prediction.html', {'msg': 'Please upload both images for Prediction 2.'})
+                return render(request, 'prediction.html', {'msg': 'Please upload both images for detection.'})
             
             image1_file = request.FILES['image1']
             image2_file = request.FILES['image2']
@@ -98,11 +98,11 @@ def prediction_view(request):
             
             
             result = prediction_2()
-            diagnosis_type = 'Type 2 Diagnosis'
+            diagnosis_type = 'Segmentation'
             prediction_type = 2
         
         else:
-            return render(request, 'prediction.html', {'msg': 'Invalid prediction method'})
+            return render(request, 'prediction.html', {'msg': 'Invalid detection method'})
         
         # Save the result to the database if the user is authenticated
         if request.user.is_authenticated:

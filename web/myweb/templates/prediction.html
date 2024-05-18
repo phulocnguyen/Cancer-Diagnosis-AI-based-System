@@ -6,10 +6,10 @@
 <section class="breadcrumbs">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <h2>Predict Page</h2>
+            <h2>Detection Page</h2>
             <ol>
                 <li><a href="/">Home</a></li>
-                <li>Predict Page</li>
+                <li>Detection Page</li>
             </ol>
         </div>
     </div>
@@ -21,38 +21,39 @@
 
         <div class="container-prediction">
             <div class="prediction-form">
-                <h1>Brain Tumor Prediction</h1>
+                <h1>Brain Tumor Detection</h1>
                 <form id="predictionForm" action="{% url 'prediction_view' %}" method="post"
                     enctype="multipart/form-data">
                     {% csrf_token %}
                     <select id="predictionMethodSelect" name="prediction_method" onchange="handlePredictionChange()">
-                        <option value="">Choose Segment</option>
-                        <option value="1">Prediction 1</option>
-                        <option value="2">Prediction 2</option>
+                        <option value="">Choose type of detection</option>
+                        <option value="1">Classification</option>
+                        <option value="2">Segmentation</option>
                     </select>
 
                     <div id="prediction1Fields" style="display: none;">
-                        <label for="image1">Upload an image for Prediction 1:</label>
+                        <label for="image1">Upload an image for Classification:</label>
                         <input type="file" name="image" id="image1" />
                     </div>
 
                     <div id="prediction2Fields" style="display: none;">
-                        <label for="image2_1">Upload flair image for Prediction 2:</label>
+                        <label for="image2_1">Upload flair image for Segmentation:</label>
                         <input type="file" name="image1" id="image2_1" />
-                        <label for="image2_2">Upload t1ce image for Prediction 2:</label>
+                        <label for="image2_2">Upload t1ce image for Segmentation:</label>
                         <input type="file" name="image2" id="image2_2" />
                     </div>
 
-                    <button type="submit">Predict</button>
+                    <button type="submit">Detect</button>
                     <div class="msg" style="color: red">{{ msg }}</div>
                 </form>
             </div>
             {% if result %}
             <div class="prediction-result">
-                <h2>Prediction Result: {{ result }}</h2>
                 {% if prediction_type == 1 %}
+                <h2>Brain Tumor Detection Result: {{ result }}</h2>
                 <img src="{% static 'userdata/test.jpg' %}" alt="Prediction Result">
                 {% elif prediction_type == 2 %}
+                <h2>Brain Tumor Detection Result:</h2>
                 <img src="{% static 'userdata/prediction_result.png' %}" alt="Prediction Result">
                 {% endif %}
             </div>

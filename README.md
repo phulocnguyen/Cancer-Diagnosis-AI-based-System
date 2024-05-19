@@ -12,9 +12,10 @@ Mục đích của dự án này là xây dựng một website sử dụng mô h
 
 ## Mô tả
 Hệ thống chẩn đoán u não có 2 tác vụ chính là Classification và Segmentation.
+
 Đối với tác vụ Classification, chúng tôi sử dụng mô hình Convolutional Neural Network để tiến hành trích xuất đặc điểm từ hình ảnh đầu vào và đưa ra nhãn chính xác. Mô hình hoạt động tốt với bộ dữ liệu mà chúng tôi tìm được với độ chính xác cao trên từng tập train/val/test lần lượt là 0.989/0.991/0.933
 
-Đối với tác cụ Segmentation, chúng tôi sử dụng kiến trúc UNet bao gồm 2 thành phần chính là encoder và decoder. Mô hình cho kết quả khá chính xác, đảm bảo độ tin cậy khi sử dụng với bộ dữ liệu lớn.
+Đối với tác vụ Segmentation, chúng tôi sử dụng kiến trúc UNet bao gồm 2 thành phần chính là encoder và decoder. Mô hình cho kết quả khá chính xác, đảm bảo độ tin cậy khi sử dụng với bộ dữ liệu lớn.
 
 ## To Install:
 
